@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+			http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+
+
+	<bean id="queryRetriever" class="com.semlab.server.sparql.QueryRetriever">
+		<property name="queries">
+			<map>
+				<entry key="getPlaceDBPData">
+					<bean class="com.semlab.server.sparql.SparqlQuery">
+						<property name="includeInferred" value="false" />
+						<property name="query">
+							<value><![CDATA[
+                            	PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>
+                            	PREFIX dbpprop: <http://dbpedia.org/property/>
+                            	PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+                            	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+								SELECT DISTINCT ?name ?geolat ?geolong ?popDensity ?popTot ?country ?countryName WHERE{
+									<%1$s> a dbpedia-owl:Place;
+										rdfs:label ?name.
+									OPTIONAL {<%1$s> geo:lat ?geolat.}
+									OPTIONAL {<%1$s> geo:long ?geolong.} 
+									OPTIONAL {<%1$s> dbpprop:populationTotal ?popTot.}
+									OPTIONAL {<%1$s> dbpprop:populationDensityKm ?popDensity.}
+									OPTIONAL {<%1$s> dbpedia-owl:country ?country.}
+        							OPTIONAL {?country rdfs:label ?countryName.}
+        							FILTER (lang(?name)='en' && lang(?countryName)='en')
+								}
+                         	]]></value>
+						</property>
+					</bean>
+				</entry>
+				<entry key="getEducationalInstitutionDBPData">
+					<bean class="com.semlab.server.sparql.SparqlQuery">
+						<property name="includeInferred" value="false" />
+						<property name="query">
+							<value><![CDATA[
+								PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>
+                            	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+								SELECT DISTINCT ?name ?city ?cityName ?country ?countryName WHERE{
+									<%1$s> a dbpedia-owl:EducationalInstitution;
+										rdfs:label ?name.
+									OPTIONAL {<%1$s> dbpedia-owl:city ?city.}
+									OPTIONAL {?city rdfs:label ?cityName.}
+        							OPTIONAL {<%1$s> dbpedia-owl:country ?country.}
+       								OPTIONAL {?country rdfs:label ?countryName.}
+        							FILTER (lang(?name)='en' && lang(?cityName)='en' && lang(?countryName)='en')
+								}
+                         	]]></value>
+						</property>
+					</bean>
+				</entry>
+				<entry key="getBookDBPData">
+					<bean class="com.semlab.server.sparql.SparqlQuery">
+						<property name="includeInferred" value="false" />
+						<property name="query">
+							<value><![CDATA[
+								PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>
+                            	PREFIX dbpprop: <http://dbpedia.org/property/>
+                            	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+								SELECT ?name ?isbn ?genre ?author WHERE {
+									<%1$s> rdfs:label ?name; dbpprop:isbn ?isbn.
+									{<%1$s> dbpprop:genre ?genre.} UNION {<%1$s> dbpedia-owl:literaryGenre ?genre.}
+									{<%1$s> dbpprop:author ?author.} UNION {<%1$s> dbpedia-owl:author ?author.}
+									FILTER (lang(?name)='en')
+								} LIMIT 1
+                         	]]></value>
+						</property>
+					</bean>
+				</entry>
+				<entry key="getBookAuthorDBPData">
+					<bean class="com.semlab.server.sparql.SparqlQuery">
+						<property name="includeInferred" value="false" />
+						<property name="query">
+							<value><![CDATA[
+								PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>
+                            	PREFIX dbpprop: <http://dbpedia.org/property/>
+                            	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+								SELECT DISTINCT ?name ?nationality ?book ?bookName WHERE {
+									<%1$s> rdfs:label ?name.
+									OPTIONAL {{<%1$s> dbpedia-owl:nationality ?nationality.} UNION {<%1$s> dbpprop:nationality ?nationality.}}
+									?book dbpedia-owl:author <%1$s>.
+									?book rdfs:label ?bookName.
+									FILTER (lang(?name)='en' && lang(?bookName)='en')
+								}
+                         	]]></value>
+						</property>
+					</bean>
+				</entry>
+				<entry key="getMovieDBPData">
+					<bean class="com.semlab.server.sparql.SparqlQuery">
+						<property name="includeInferred" value="false"/>
+						<property name="query">
+							<value><![CDATA[
+								PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>
+                            	PREFIX dbpprop: <http://dbpedia.org/property/>
+                            	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+								SELECT DISTINCT ?name ?director ?directorName ?actor ?actorName WHERE {
+									<%1$s> rdfs:label ?name.
+									OPTIONAL {{<%1$s> dbpedia-owl:director ?director.} UNION {<%1$s> dbpprop:director ?director.}}
+									?director rdfs:label ?directorName.
+									<%1$s> dbpedia-owl:starring ?actor.
+									?actor rdfs:label ?actorName.
+									FILTER (lang(?name)='en' && lang(?actorName)='en' && lang(?directorName)='en')
+								}
+                         	]]></value>
+						</property>
+					</bean>
+				</entry>
+				<entry key="getDirectorDBPData">
+					<bean class="com.semlab.server.sparql.SparqlQuery">
+						<property name="includeInferred" value="false"/>
+						<property name="query">
+							<value><![CDATA[
+								PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>
+                            	PREFIX dbpprop: <http://dbpedia.org/property/>
+                            	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+								SELECT DISTINCT ?director ?directorName WHERE {
+									OPTIONAL {{<%1$s> dbpedia-owl:director ?director.} UNION {<%1$s> dbpprop:director ?director.}}
+									?director rdfs:label ?directorName.
+									FILTER (lang(?directorName)='en')
+								}
+                         	]]></value>
+						</property>
+					</bean>
+				</entry>
+				<entry key="getActorDBPData">
+					<bean class="com.semlab.server.sparql.SparqlQuery">
+						<property name="includeInferred" value="false"/>
+						<property name="query">
+							<value><![CDATA[
+								SELECT DISTINCT ?actor ?actorName WHERE {
+									OPTIONAL {<%1$s> dbpedia-owl:starring ?actor.}
+									?actor rdfs:label ?actorName.
+									FILTER (lang(?actorName)='en')
+								}
+                         	]]></value>
+						</property>
+					</bean>
+				</entry>
+				<entry key="getTVShowDBPData">
+					<bean class="com.semlab.server.sparql.SparqlQuery">
+						<property name="includeInferred" value="false"/>
+						<property name="query">
+							<value><![CDATA[
+								PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>
+                            	PREFIX dbpprop: <http://dbpedia.org/property/>
+                            	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+								SELECT DISTINCT ?name ?numOfSeasons ?numOfEpisodes WHERE {
+									<%1$s> rdfs:label ?name.
+									OPTIONAL {<%1$s> dbpedia-owl:numberOfEpisodes ?numOfEpisodes.}
+									OPTIONAL {<%1$s> dbpedia-owl:numberOfSeasons ?numOfSeasons.}
+									FILTER (lang(?name)='en')
+								}
+                         	]]></value>
+						</property>
+					</bean>
+				</entry>
+				<entry key="getMusicArtistDBPData">
+					<bean class="com.semlab.server.sparql.SparqlQuery">
+						<property name="includeInferred" value="false"/>
+						<property name="query">
+							<value><![CDATA[
+								PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>
+                            	PREFIX dbpprop: <http://dbpedia.org/property/>
+                            	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>							
+								SELECT DISTINCT ?name ?album ?albumName WHERE {
+									<%1$s> rdfs:label ?name.
+									?album dbpedia-owl:artist <%1$s>.
+									?album rdfs:label ?albumName.
+									FILTER (lang(?name)='en' && lang(?albumName)='en')
+								}
+                         	]]></value>
+						</property>
+					</bean>
+				</entry>
+				<entry key="getBandMembersDBPData">
+					<bean class="com.semlab.server.sparql.SparqlQuery">
+						<property name="includeInferred" value="false"/>
+						<property name="query">
+							<value><![CDATA[
+								PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>
+                            	PREFIX dbpprop: <http://dbpedia.org/property/>
+                            	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>							
+								SELECT DISTINCT ?name ?bandMember ?bandMemberName WHERE {
+									<%1$s> rdfs:label ?name.
+									<%1$s> dbpedia-owl:bandMember ?bandMember.
+									?bandMember rdfs:label ?bandMemberName.
+									FILTER (lang(?name)='en' && lang(?bandMemberName)='en')
+								}
+                         	]]></value>
+						</property>
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+</beans>

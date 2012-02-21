@@ -1,0 +1,871 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+			http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+
+
+	<bean id="fbProfil" class="com.semlab.shared.config.Thing">
+		<property name="sourcePlatform" value="facebook"/>
+		<property name="source" ref="dbpedia" />
+		<property name="classType" value="http://www.facebook.com/profile" />
+		<property name="label" value="Person"/>
+		<property name="properties">
+			<list>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="profile_name" />
+					<property name="label" value="name"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="first_name" />
+					<property name="label" value="first name"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="last_name"/>
+					<property name="label" value="last name"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://www.facebook.com/username"/>
+					<property name="label" value="username"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://www.facebook.com/birthday"/>
+					<property name="label" value="birthday"/>
+					<property name="type" value="Date"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://www.facebook.com/gender"/>
+					<property name="label" value="gender"/> 
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://www.facebook.com/email"/>
+					<property name="label" value="email"/> 
+				</bean>				
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://www.facebook.com/website"/>
+					<property name="label" value="homepage"/> 
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="WORKS_AT"/>
+					<property name="label" value="works at"/>
+					<property name="typeOf" ref="company"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="LIVES_IN"/>
+					<property name="label" value="living location"/>
+					<property name="typeOf" ref="city"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="BORN_IN"/>
+					<property name="label" value="hometown"/>
+					<property name="typeOf" ref="city"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="EDUCATED_AT"/>
+					<property name="label" value="educated at"/>
+					<property name="typeOf" ref="educationalInstitution"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="LIKES"/>
+					<property name="label" value="likes"/>
+					<property name="typesOf">
+						<list>
+							<ref bean="movie"/>
+							<ref bean="band"/>
+							<ref bean="musician"/>
+							<ref bean="company"/>
+							<ref bean="tvshow"/>
+							<ref bean="book"/>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="excelProfile" class="com.semlab.shared.config.Thing">
+		<property name="sourcePlatform" value="excel"/>
+		<property name="source" ref="dbpedia"/>
+		<property name="classType" value="excel_profile"/>
+		<property name="label" value="Person"/>
+		<property name="properties">
+			<list>
+<!-- 				<bean class="com.semlab.shared.config.Property"> -->
+<!-- 					<property name="uri" value="profile_name"/> -->
+<!-- 					<property name="label" value="name"/> -->
+<!-- 				</bean> -->
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="WORKS_AT"/>
+					<property name="label" value="list of companies"/>
+					<property name="typeOf" ref="excelCompany"/>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="excelCompany" class="com.semlab.shared.config.Thing">
+		<property name="sourcePlatform" value="excel"/>
+		<property name="source" ref="dbpedia" />
+		<property name="classType" value="http://dbpedia.org/ontology/Organisation" />
+		<property name="label" value="Company"/>
+		<property name="properties">
+			<list>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://www.w3.org/2000/01/rdf-schema#label" />
+					<property name="filter" value="lang"/>
+					<property name="label" value="name"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://dbpedia.org/ontology/location" />
+					<property name="typeOf" ref="excelCity"/>
+					<property name="inverse" value="false" />
+					<property name="label" value="located in"/>
+					<property name="optional" value="true"/>
+				</bean>
+<!-- 				<bean class="com.semlab.shared.config.Property"> -->
+<!-- 					<property name="uri" value="name" /> -->
+<!-- 					<property name="label" value="fb name"/> -->
+<!-- 					<property name="ignoreDBP" value="true"/> -->
+<!-- 				</bean> -->
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="excelCity" class="com.semlab.shared.config.Thing">
+		<property name="sourcePlatform" value="excel"/>
+		<property name="source" ref="dbpedia" />
+		<property name="classType" value="http://dbpedia.org/ontology/Place" />
+		<property name="label" value="City"/>
+		<property name="properties">
+			<list>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://www.w3.org/2000/01/rdf-schema#label" />
+					<property name="filter" value="lang"/>
+					<property name="label" value="name"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://www.w3.org/2003/01/geo/wgs84_pos#lat" />
+					<property name="label" value="latitude"/>
+					<property name="type" value="Number"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://www.w3.org/2003/01/geo/wgs84_pos#long" />
+					<property name="label" value="longitude"/>
+					<property name="type" value="Number"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://dbpedia.org/ontology/country" />
+					<property name="typeOf" ref="excelCountry"/>
+					<property name="inverse" value="false" />
+					<property name="label" value="in"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="forecast"/>
+					<property name="ignoreDBP" value="true"/>
+					<property name="typeOf" ref="excelWeather"/>
+					<property name="label" value="forecast"/>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="excelWeather" class="com.semlab.shared.config.Thing">
+		<property name="sourcePlatform" value="excel"/>
+		<property name="classType" value="http://www.yr.no/Weather" />
+		<property name="label" value="Weather Forecast"/>
+		<property name="properties">
+			<list>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="date"/>
+					<property name="label" value="date"/>
+					<property name="type" value="Date"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="temperature"/>
+					<property name="label" value="temperature"/>
+					<property name="type" value="Number"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="humidity"/>
+					<property name="label" value="humidity"/>
+					<property name="type" value="Number"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="pressure"/>
+					<property name="label" value="pressure"/>
+					<property name="type" value="Number"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="cloudiness"/>
+					<property name="label" value="cloudiness"/>
+					<property name="type" value="Number"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="fog"/>
+					<property name="label" value="fog"/>
+					<property name="type" value="Number"/>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="excelCountry" class="com.semlab.shared.config.Thing">
+		<property name="sourcePlatform" value="excel"/>
+		<property name="source" ref="dbpedia" />
+		<property name="classType" value="http://dbpedia.org/ontology/Country" />
+		<property name="label" value="Country"/>
+		<property name="properties">
+			<list>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://www.w3.org/2000/01/rdf-schema#label" />
+					<property name="filter" value="lang"/>
+					<property name="label" value="name"/>
+				</bean>
+<!-- 				<bean class="com.semlab.shared.config.Property"> -->
+<!-- 					<property name="uri" value="http://dbpedia.org/ontology/country" /> -->
+<!-- 					<property name="typeOf" ref="city"/> -->
+<!-- 					<property name="inverse" value="true"/> -->
+<!-- 				</bean> -->
+			</list>
+		</property>
+	</bean>
+
+	<bean id="liProfile" class="com.semlab.shared.config.Thing">
+		<property name="sourcePlatform" value="linkedin"/>
+		<property name="source" ref="dbpedia" />
+		<property name="classType" value="http://www.linkedin.com/profile" />
+		<property name="label" value="Person"/>
+		<property name="properties">
+			<list>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="profile_name" />
+					<property name="label" value="name"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="first_name" />
+					<property name="label" value="first name"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="last_name"/>
+					<property name="label" value="last name"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="profile_url"/>
+					<property name="label" value="profile url"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="interests"/>
+					<property name="label" value="interests"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="specialties"/>
+					<property name="label" value="specialties"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="num_connections"/>
+					<property name="label" value="number of connections"/>
+					<property name="type" value="Number"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="num_conn_capped"/>
+					<property name="label" value="is it more than shown?"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="WORKS_AT"/>
+					<property name="label" value="works at"/>
+					<property name="typeOf" ref="licompany"/>
+					<property name="ignoreDBP" value="true"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="EDUCATED_AT"/>
+					<property name="label" value="education info"/>
+					<property name="typeOf" ref="lischool"/>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+<!-- 	<bean id="lieduSpecs" class="com.semlab.shared.config.Thing"> -->
+<!-- 		<property name="sourcePlatform" value="linkedin"/> -->
+<!-- 		<property name="source" ref="dbpedia" /> -->
+<!-- 		<property name="classType" value="edu_specs" /> -->
+<!-- 		<property name="label" value="edu_specs"/> -->
+<!-- 		<property name="properties"> -->
+<!-- 			<list> -->
+<!-- 				<bean class="com.semlab.shared.config.Property"> -->
+<!-- 					<property name="uri" value="IN_SCHOOL" /> -->
+<!-- 					<property name="label" value="in school"/> -->
+<!-- 					<property name="typeOf" ref="lischool"/> -->
+<!-- 				</bean> -->
+<!-- 			</list> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
+	
+	<bean id="lischool" class="com.semlab.shared.config.Thing">
+		<property name="sourcePlatform" value="linkedin"/>
+		<property name="source" ref="dbpedia"/>
+		<property name="classType" value="http://dbpedia.org/ontology/EducationalInstitution"/>
+		<property name="label" value="Educational Institution"/>
+		<property name="properties">
+			<list>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://www.w3.org/2000/01/rdf-schema#label" />
+					<property name="filter" value="lang"/>
+					<property name="label" value="name"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://dbpedia.org/ontology/city" />
+					<property name="typeOf" ref="licity"/>
+					<property name="inverse" value="false" />
+					<property name="label" value="located in"/>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="licompany" class="com.semlab.shared.config.Thing">
+		<property name="sourcePlatform" value="linkedin"/>
+		<property name="source" ref="dbpedia" />
+		<property name="classType" value="http://dbpedia.org/ontology/Organisation" />
+		<property name="label" value="Company"/>
+		<property name="properties">
+			<list>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="name"/>
+					<property name="label" value="linkedin name"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="website"/>
+					<property name="label" value="website uri"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="LOCATED_AT"/>
+					<property name="typeOf" ref="liaddress"/>
+					<property name="ignoreDBP" value="true"/>
+					<property name="label" value="locate at"/>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="liaddress" class="com.semlab.shared.config.Thing">
+		<property name="sourcePlatform" value="linkedin"/>
+		<property name="source" ref="dbpedia" />
+		<property name="classType" value="address" />
+		<property name="label" value="Address"/>
+		<property name="properties">
+			<list>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="street"/>
+					<property name="label" value="street"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="hq"/>
+					<property name="label" value="hq?"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="IN_CITY"/>
+					<property name="typeOf" ref="licityor"/>
+					<property name="ignoreDBP" value="true"/>
+					<property name="label" value="in city"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="IN_COUNTRY"/>
+					<property name="typeOf" ref="licountryor"/>
+					<property name="ignoreDBP" value="true"/>
+					<property name="label" value="in country"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="HAS_POSTAL_CODE"/>
+					<property name="typeOf" ref="lipostalc"/>
+					<property name="ignoreDBP" value="true"/>
+					<property name="label" value="postal code"/>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="licityor" class="com.semlab.shared.config.Thing">
+		<property name="sourcePlatform" value="linkedin"/>
+		<property name="source" ref="dbpedia" />
+		<property name="classType" value="licity" />
+		<property name="label" value="LI City"/>
+		<property name="properties">
+			<list>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="name"/>
+					<property name="label" value="name"/>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="licountryor" class="com.semlab.shared.config.Thing">
+		<property name="sourcePlatform" value="linkedin"/>
+		<property name="source" ref="dbpedia" />
+		<property name="classType" value="licountry" />
+		<property name="label" value="LI Country"/>
+		<property name="properties">
+			<list>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="name"/>
+					<property name="label" value="name"/>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="lipostalc" class="com.semlab.shared.config.Thing">
+		<property name="sourcePlatform" value="linkedin"/>
+		<property name="source" ref="dbpedia" />
+		<property name="classType" value="lipostalc" />
+		<property name="label" value="LI Postal Code"/>
+		<property name="properties">
+			<list>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="postal_code_value"/>
+					<property name="label" value="postal code"/>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="licity" class="com.semlab.shared.config.Thing">
+		<property name="sourcePlatform" value="linkedin"/>
+		<property name="source" ref="dbpedia" />
+		<property name="classType" value="http://dbpedia.org/ontology/Place" />
+		<property name="label" value="City"/>
+		<property name="properties">
+			<list>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://www.w3.org/2000/01/rdf-schema#label" />
+					<property name="filter" value="lang"/>
+					<property name="label" value="name"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://www.w3.org/2003/01/geo/wgs84_pos#lat" />
+					<property name="label" value="latitude"/>
+					<property name="type" value="Number"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://www.w3.org/2003/01/geo/wgs84_pos#long" />
+					<property name="label" value="longitude"/>
+					<property name="type" value="Number"/>
+				</bean>
+<!-- 				<bean class="com.semlab.shared.config.Property"> -->
+<!-- 					<property name="uri" value="http://dbpedia.org/ontology/country" /> -->
+<!-- 					<property name="typeOf" ref="country"/> -->
+<!-- 					<property name="inverse" value="false" /> -->
+<!-- 					<property name="label" value="in"/> -->
+<!-- 				</bean> -->
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="forecast"/>
+					<property name="ignoreDBP" value="true"/>
+					<property name="typeOf" ref="liweather"/>
+					<property name="label" value="forecast"/>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="liweather" class="com.semlab.shared.config.Thing">
+		<property name="sourcePlatform" value="linkedin"/>
+		<property name="classType" value="http://www.yr.no/Weather" />
+		<property name="label" value="Weather Forecast"/>
+		<property name="properties">
+			<list>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="date"/>
+					<property name="label" value="date"/>
+					<property name="type" value="Date"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="temperature"/>
+					<property name="label" value="temperature"/>
+					<property name="type" value="Number"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="humidity"/>
+					<property name="label" value="humidity"/>
+					<property name="type" value="Number"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="pressure"/>
+					<property name="label" value="pressure"/>
+					<property name="type" value="Number"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="cloudiness"/>
+					<property name="label" value="cloudiness"/>
+					<property name="type" value="Number"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="fog"/>
+					<property name="label" value="fog"/>
+					<property name="type" value="Number"/>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<!-- datasources configuration -->
+	
+	<bean id="dbpedia" class="com.semlab.shared.config.DataSource">
+<!-- 		<property name="sparqlEndpoint" value="http://lod.openlinksw.com/sparql" /> -->
+		<property name="sparqlEndpoint" value="http://dbpedia.org/sparql" />
+<!-- 		<property name="sparqlEndpoint" value="http://live.dbpedia.org/sparql"/> -->
+	</bean>
+	
+	<bean id="company" class="com.semlab.shared.config.Thing">
+		<property name="sourcePlatform" value="facebook"/>
+		<property name="source" ref="dbpedia" />
+		<property name="classType" value="http://dbpedia.org/ontology/Organisation" />
+		<property name="label" value="Company"/>
+		<property name="properties">
+			<list>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://www.w3.org/2000/01/rdf-schema#label" />
+					<property name="filter" value="lang"/>
+					<property name="label" value="name"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://dbpedia.org/ontology/city" />
+					<property name="typeOf" ref="city"/>
+					<property name="inverse" value="false" />
+					<property name="label" value="located in"/>
+					<property name="optional" value="true"/>
+				</bean>
+<!-- 				<bean class="com.semlab.shared.config.Property"> -->
+<!-- 					<property name="uri" value="name" /> -->
+<!-- 					<property name="label" value="fb name"/> -->
+<!-- 					<property name="ignoreDBP" value="true"/> -->
+<!-- 				</bean> -->
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="book" class="com.semlab.shared.config.Thing">
+		<property name="sourcePlatform" value="facebook"/>
+		<property name="source" ref="dbpedia" />
+		<property name="classType" value="http://dbpedia.org/ontology/Book" />
+		<property name="label" value="Book"/>
+		<property name="properties">
+			<list>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://www.w3.org/2000/01/rdf-schema#label" />
+					<property name="filter" value="lang"/>
+					<property name="label" value="name"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://dbpedia.org/ontology/isbn" />
+					<property name="optional" value="true"/>
+					<property name="label" value="isbn"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://dbpedia.org/property/author" />
+					<property name="typeOf" ref="author"/>
+					<property name="inverse" value="false" />
+					<property name="label" value="written by"/>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="author" class="com.semlab.shared.config.Thing">
+		<property name="sourcePlatform" value="facebook"/>
+		<property name="source" ref="dbpedia" />
+		<property name="classType" value="http://dbpedia.org/ontology/Author" />
+		<property name="label" value="Author"/>
+		<property name="properties">
+			<list>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://xmlns.com/foaf/0.1/name" />
+					<property name="label" value="name"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://dbpedia.org/ontology/nationality" />
+					<property name="optional" value="true"/>
+					<property name="label" value="nationality"/>
+				</bean>
+<!-- 				<bean class="com.semlab.shared.config.Property"> -->
+<!-- 					<property name="uri" value="http://dbpedia.org/ontology/author"/> -->
+<!-- 					<property name="typeOf" ref="book"/> -->
+<!-- 					<property name="inverse" value="true"/> -->
+<!-- 				</bean> -->
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="city" class="com.semlab.shared.config.Thing">
+		<property name="sourcePlatform" value="facebook"/>
+		<property name="source" ref="dbpedia" />
+		<property name="classType" value="http://dbpedia.org/ontology/Place" />
+		<property name="label" value="City"/>
+		<property name="properties">
+			<list>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://www.w3.org/2000/01/rdf-schema#label" />
+					<property name="filter" value="lang"/>
+					<property name="label" value="name"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://www.w3.org/2003/01/geo/wgs84_pos#lat" />
+					<property name="label" value="latitude"/>
+					<property name="type" value="Number"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://www.w3.org/2003/01/geo/wgs84_pos#long" />
+					<property name="label" value="longitude"/>
+					<property name="type" value="Number"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://dbpedia.org/ontology/country" />
+					<property name="typeOf" ref="country"/>
+					<property name="inverse" value="false" />
+					<property name="label" value="in"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="forecast"/>
+					<property name="ignoreDBP" value="true"/>
+					<property name="typeOf" ref="weather"/>
+					<property name="label" value="forecast"/>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="weather" class="com.semlab.shared.config.Thing">
+		<property name="sourcePlatform" value="facebook"/>
+		<property name="classType" value="http://www.yr.no/Weather" />
+		<property name="label" value="Weather Forecast"/>
+		<property name="properties">
+			<list>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="date"/>
+					<property name="label" value="date"/>
+					<property name="type" value="Date"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="temperature"/>
+					<property name="label" value="temperature"/>
+					<property name="type" value="Number"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="humidity"/>
+					<property name="label" value="humidity"/>
+					<property name="type" value="Number"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="pressure"/>
+					<property name="label" value="pressure"/>
+					<property name="type" value="Number"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="cloudiness"/>
+					<property name="label" value="cloudiness"/>
+					<property name="type" value="Number"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="fog"/>
+					<property name="label" value="fog"/>
+					<property name="type" value="Number"/>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="country" class="com.semlab.shared.config.Thing">
+		<property name="sourcePlatform" value="facebook"/>
+		<property name="source" ref="dbpedia" />
+		<property name="classType" value="http://dbpedia.org/ontology/Country" />
+		<property name="label" value="Country"/>
+		<property name="properties">
+			<list>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://www.w3.org/2000/01/rdf-schema#label" />
+					<property name="filter" value="lang"/>
+					<property name="label" value="name"/>
+				</bean>
+<!-- 				<bean class="com.semlab.shared.config.Property"> -->
+<!-- 					<property name="uri" value="http://dbpedia.org/ontology/country" /> -->
+<!-- 					<property name="typeOf" ref="city"/> -->
+<!-- 					<property name="inverse" value="true"/> -->
+<!-- 				</bean> -->
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="educationalInstitution" class="com.semlab.shared.config.Thing">
+		<property name="sourcePlatform" value="facebook"/>
+		<property name="source" ref="dbpedia"/>
+		<property name="classType" value="http://dbpedia.org/ontology/EducationalInstitution"/>
+		<property name="label" value="Educational Institution"/>
+		<property name="properties">
+			<list>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://www.w3.org/2000/01/rdf-schema#label" />
+					<property name="filter" value="lang"/>
+					<property name="label" value="name"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://dbpedia.org/ontology/city" />
+					<property name="typeOf" ref="city"/>
+					<property name="inverse" value="false" />
+					<property name="label" value="located in"/>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="tvshow" class="com.semlab.shared.config.Thing">
+		<property name="sourcePlatform" value="facebook"/>
+		<property name="source" ref="dbpedia"/>
+		<property name="classType" value="http://dbpedia.org/ontology/TelevisionShow"/>
+		<property name="label" value="Tv Show"/>
+		<property name="properties">
+			<list>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://www.w3.org/2000/01/rdf-schema#label"/>
+					<property name="filter" value="lang"/>
+					<property name="label" value="name"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://dbpedia.org/ontology/numberOfEpisodes"/>
+					<property name="optional" value="true"/>
+					<property name="label" value="# of episodes"/>
+					<property name="type" value="Number"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://dbpedia.org/ontology/numberOfSeasons"/>
+					<property name="optional" value="true"/>
+					<property name="label" value="# of seasons"/>
+					<property name="type" value="Number"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://dbpedia.org/ontology/releaseDate"/>
+					<property name="optional" value="true"/>
+					<property name="label" value="release date"/>
+					<property name="type" value="Date"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://dbpedia.org/ontology/runtime"/>
+					<property name="optional" value="true"/>
+					<property name="label" value="runtime"/>
+					<property name="type" value="Number"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://dbpedia.org/ontology/starring" />
+					<property name="typeOf" ref="actor"/>
+					<property name="inverse" value="false" />
+					<property name="label" value="starring"/>
+					<property name="optional" value="true"/>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="movie" class="com.semlab.shared.config.Thing">
+		<property name="sourcePlatform" value="facebook"/>
+		<property name="source" ref="dbpedia"/>
+		<property name="classType" value="http://dbpedia.org/ontology/Film"/>
+		<property name="label" value="Movie"/>
+		<property name="properties">
+			<list>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://www.w3.org/2000/01/rdf-schema#label"/>
+					<property name="filter" value="lang"/>
+					<property name="label" value="name"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://dbpedia.org/ontology/runtime"/>
+					<property name="optional" value="true"/>
+					<property name="label" value="runtime"/>
+					<property name="type" value="Number"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://dbpedia.org/ontology/releaseDate"/>
+					<property name="optional" value="true"/>
+					<property name="label" value="release date"/>
+					<property name="type" value="Date"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://dbpedia.org/ontology/starring" />
+					<property name="typeOf" ref="actor"/>
+					<property name="inverse" value="false" />
+					<property name="label" value="starring"/>
+					<property name="optional" value="true"/>
+				</bean>
+<!-- 				<bean class="com.semlab.shared.config.Property"> -->
+<!-- 					<property name="uri" value="name"/> -->
+<!-- 					<property name="ignoreDBP" value="true"/> -->
+<!-- 					<property name="label" value="fbname"/> -->
+<!-- 				</bean> -->
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="actor" class="com.semlab.shared.config.Thing">
+		<property name="sourcePlatform" value="facebook"/>
+		<property name="source" ref="dbpedia"/>
+		<property name="classType" value="http://dbpedia.org/ontology/Person"/>
+		<property name="label" value="Actor"/>
+		<property name="properties">
+			<list>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://www.w3.org/2000/01/rdf-schema#label"/>
+					<property name="filter" value="lang"/>
+					<property name="label" value="name"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://dbpedia.org/ontology/birthName"/>
+					<property name="optional" value="true"/>
+					<property name="label" value="birth name"/>
+				</bean>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://dbpedia.org/ontology/nationality"/>
+					<property name="optional" value="true"/>
+					<property name="label" value="nationality"/>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="musician" class="com.semlab.shared.config.Thing">
+		<property name="sourcePlatform" value="facebook"/>
+		<property name="source" ref="dbpedia"/>
+		<property name="classType" value="http://dbpedia.org/ontology/MusicalArtist"/>
+		<property name="label" value="Musician"/>
+		<property name="properties">
+			<list>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://www.w3.org/2000/01/rdf-schema#label"/>
+					<property name="filter" value="lang"/>
+					<property name="label" value="name"/>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="band" class="com.semlab.shared.config.Thing">
+		<property name="sourcePlatform" value="facebook"/>
+		<property name="source" ref="dbpedia"/>
+		<property name="classType" value="http://dbpedia.org/ontology/Band"/>
+		<property name="label" value="Band"/>
+		<property name="properties">
+			<list>
+				<bean class="com.semlab.shared.config.Property">
+					<property name="uri" value="http://www.w3.org/2000/01/rdf-schema#label"/>
+					<property name="filter" value="lang"/>
+					<property name="label" value="name"/>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+</beans>
