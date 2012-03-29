@@ -10,7 +10,7 @@
 			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
  	
  	<bean id="socialParams" class="com.semlab.shared.config.SocialParameters">
- 		<property name="facebookApiKey" value="309929709034292"/>
+ 		<property name="facebookApiKey" value="125762400871777"/>
  	</bean>
 
 </beans>
