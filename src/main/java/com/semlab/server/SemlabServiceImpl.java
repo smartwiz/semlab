@@ -56,4 +56,50 @@ public class SemlabServiceImpl implements SemlabService {
 		log.debug(":: TEST :: first name = " + profileId);
 	}
 
+	@Override
+	public void startImport(String token) {
+		log.debug(":: Starting import ::");
+		Facebook facebook = new FacebookTemplate(token);
+		FacebookProfile profile = facebook.userOperations().getUserProfile();
+		List<Post> posts = facebook.feedOperations().getFeed(0, 100);
+		for (Post post : posts) {
+			log.debug(":: FEED :: " + post.getDescription() + " "
+					+ post.getMessage() + " " + post.getCaption());
+		}
+		String profileId = profile.getFirstName();
+		List<FacebookProfile> friends = facebook.friendOperations()
+				.getFriendProfiles();
+		for (FacebookProfile friend : friends) {
+			List<org.springframework.social.facebook.api.Page> movies = facebook
+					.likeOperations().getMovies(friend.getId());
+			for (org.springframework.social.facebook.api.Page page : movies) {
+				log.debug(":: TEST :: movie = " + page.getName());
+			}
+		}
+		log.debug(":: TEST :: first name = " + profileId);
+	}
+
+	@Override
+	public void startEnrich(String token) {
+		log.debug(":: Starting enrichment ::");
+		Facebook facebook = new FacebookTemplate(token);
+		FacebookProfile profile = facebook.userOperations().getUserProfile();
+		List<Post> posts = facebook.feedOperations().getFeed(0, 100);
+		for (Post post : posts) {
+			log.debug(":: FEED :: " + post.getDescription() + " "
+					+ post.getMessage() + " " + post.getCaption());
+		}
+		String profileId = profile.getFirstName();
+		List<FacebookProfile> friends = facebook.friendOperations()
+				.getFriendProfiles();
+		for (FacebookProfile friend : friends) {
+			List<org.springframework.social.facebook.api.Page> movies = facebook
+					.likeOperations().getMovies(friend.getId());
+			for (org.springframework.social.facebook.api.Page page : movies) {
+				log.debug(":: TEST :: movie = " + page.getName());
+			}
+		}
+		log.debug(":: TEST :: first name = " + profileId);
+	}
+
 }

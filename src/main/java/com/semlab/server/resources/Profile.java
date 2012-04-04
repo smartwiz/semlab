@@ -7,6 +7,7 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.social.facebook.api.FacebookProfile;
 
 import com.semlab.shared.DomainObject;
 import com.semlab.shared.resources.NamespaceConstants;
@@ -30,24 +31,10 @@ public class Profile extends DomainObject{
 	private String email;
 	private String website;
 	
-	//li
-	private String interests;
-	private String specialties;
-	private int numConnections;
-	private boolean numConnCapped;
-	
-//	
-//	@PostConstruct
-//	void createNode(){
-//		super.persist();
-//	}
+
 	
 	public Profile() {
-//		type = FType.Friend.getUri();
 	}
-//	public Profile(Node node) {
-//		super(node);
-//	}
 	
 	public String getId() {
 		return id;
@@ -114,55 +101,25 @@ public class Profile extends DomainObject{
 		this.website = website;
 	}
 	
-//	public void parseFProfil(FProfil fprofil){
-//		type = NamespaceConstants.FB_PROFILE;
-//		id = fprofil.getId();
-//		name = fprofil.getName();
-//		first_name = fprofil.getFirst_name();
-//		last_name = fprofil.getLast_name();
-//		profile_url = fprofil.getLink();
-//		username = fprofil.getUsername();
-//		if(fprofil.getBirthday() != null){
-//			birthday = parseBirthday(fprofil.getBirthday());
-//		}
-//		gender = fprofil.getGender();
-//		email = fprofil.getEmail();
-//		website = fprofil.getWebsite();
-//	}
-//	
-//	public void parseFObject(FObject fobject) {
-//		id = fobject.getId();
-//		name = fobject.getName();
-//	}
-//	
-//	public void parseLIProfile(LinkedInPerson person){
-//		log.debug(person.getId() + person.getFirstName());
-//		type = NamespaceConstants.LINKEDIN_PROFILE;
-//		id = person.getId();
-//		name = person.getFirstName() + " " + person.getLastName();
-//		first_name = person.getFirstName();
-//		last_name = person.getLastName();
-//		profile_url = person.getPublicProfileUrl();
-//		numConnections = person.getNumConnections();
-//		numConnCapped = person.isNumConnectionsCapped();
-//	}
-	
-	private long parseBirthday(String birthday){
-		long bd;
-		SimpleDateFormat sdf1 = new SimpleDateFormat("MM/dd/yyyy");
-		SimpleDateFormat sdf2 = new SimpleDateFormat("MM/dd");
-		Date d;
-		try {
-			d = sdf1.parse(birthday);
-		} catch (ParseException e) {
+	public long parseBirthday(String birthday){
+		if(birthday != null){
+			long bd;
+			SimpleDateFormat sdf1 = new SimpleDateFormat("MM/dd/yyyy");
+			SimpleDateFormat sdf2 = new SimpleDateFormat("MM/dd");
+			Date d;
 			try {
-				d= sdf2.parse(birthday);
-			} catch (ParseException e1) {
-				return 0L;
+				d = sdf1.parse(birthday);
+			} catch (ParseException e) {
+				try {
+					d= sdf2.parse(birthday);
+				} catch (ParseException e1) {
+					return 0L;
+				}
 			}
+			bd = d.getTime();
+			return bd;
 		}
-		bd = d.getTime();
-		return bd;
+		return -1;
 	}
 
 	@Override
@@ -172,38 +129,6 @@ public class Profile extends DomainObject{
 				+ ", profile_url=" + profile_url + ", username=" + username + ", birthday="
 				+ birthday + ", gender=" + gender + ", email=" + email
 				+ ", website=" + website + "]";
-	}
-
-	public String getInterests() {
-		return interests;
-	}
-
-	public void setInterests(String interests) {
-		this.interests = interests;
-	}
-
-	public String getSpecialties() {
-		return specialties;
-	}
-
-	public void setSpecialties(String specialties) {
-		this.specialties = specialties;
-	}
-
-	public int getNumConnections() {
-		return numConnections;
-	}
-
-	public void setNumConnections(int numConnections) {
-		this.numConnections = numConnections;
-	}
-
-	public boolean isNumConnCapped() {
-		return numConnCapped;
-	}
-
-	public void setNumConnCapped(boolean numConnCapped) {
-		this.numConnCapped = numConnCapped;
 	}
 
 }

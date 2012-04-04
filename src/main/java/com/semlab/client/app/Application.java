@@ -10,7 +10,9 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.inject.Inject;
+import com.semlab.client.app.events.LoginEvent;
 import com.semlab.client.fwk.DefaultActivityManager;
+import com.semlab.client.fwk.Event;
 import com.semlab.client.fwk.Place;
 import com.semlab.client.fwk.async.AbstractAsyncCallback;
 import com.semlab.client.fwk.async.AsyncActivityEvent;
@@ -34,6 +36,7 @@ public class Application {
 	private final DefaultActivityManager activityManager;
 	private final SemlabServiceAsync service;
 	private final ApplicationShell shell;
+	private static String token;
 
 	private Place defaultPlace = HomeMVP.place();
 	
@@ -102,6 +105,19 @@ public class Application {
 			}
 		});
 
+		eventBus.addHandler(LoginEvent.TYPE, new Event.Handler<LoginEvent>() {
+
+			@Override
+			public void on(LoginEvent e) {
+				if(e.getClient().getId() != null){
+					log.fine(":: saving token in app:: token="+e.getClient().getToken());
+					token = e.getClient().getToken();
+				}else{
+					log.fine("## login unsuccessful");
+				}
+			}
+		});
+		
 		activityManager.process();
 		placeHistoryHandler.register(placeController, eventBus, defaultPlace);
 	}
@@ -118,6 +134,10 @@ public class Application {
 		} else {
 			callback.onSuccess(config);
 		}
+	}
+	
+	public static String getActiveToken(){
+		return token;
 	}
 
 }

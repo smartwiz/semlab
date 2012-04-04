@@ -9,6 +9,12 @@ import com.semlab.shared.config.Configuration;
 public interface SemlabServiceAsync {
 
 	void getConfig(AsyncCallback<Configuration> abstractAsyncCallback);
+
+	void startImport(String token,
+			AsyncCallback<Void> abstractAsyncCallback);
+
+	void startEnrich(String token,
+			AsyncCallback<Void> abstractAsyncCallback);
 	
 
 

@@ -17,6 +17,9 @@ public class Property implements Serializable {
 	private PropertyType type = PropertyType.Text;
 	private List<Thing> typesOf;
 	private boolean ignoreDBP;
+	private boolean useDifferentUri;
+	private String overrideUri;
+	private boolean hideOnUi;
 
 	public Property() {
 	}
@@ -99,6 +102,31 @@ public class Property implements Serializable {
 
 	public void setIgnoreDBP(boolean ignoreDBP) {
 		this.ignoreDBP = ignoreDBP;
+	}
+
+	public boolean isUseDifferentUri() {
+		return useDifferentUri;
+	}
+
+	public void setUseDifferentUri(boolean useDifferentUri) {
+		this.useDifferentUri = useDifferentUri;
+	}
+	
+
+	public String getOverrideUri() {
+		return overrideUri;
+	}
+
+	public void setOverrideUri(String overrideUri) {
+		this.overrideUri = overrideUri;
+	}
+
+	public boolean isHideOnUi() {
+		return hideOnUi;
+	}
+
+	public void setHideOnUi(boolean hideOnUi) {
+		this.hideOnUi = hideOnUi;
 	}
 
 }

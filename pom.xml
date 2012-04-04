@@ -12,12 +12,12 @@
 	<!-- properties -->
 	<properties>
 		<gwt.version>2.4.0</gwt.version>
-		<spring.version>3.0.6.RELEASE</spring.version>
+		<spring.version>3.0.7.RELEASE</spring.version>
 		<java-version>1.6</java-version>
 		<spring.social.version>1.0.1.RELEASE</spring.social.version>
 		<aspectj.version>1.6.12</aspectj.version>
 		<neo4j.version>1.6</neo4j.version>
-		<spring-data-graph.version>2.0.0.RELEASE</spring-data-graph.version>
+		<spring-data-graph.version>2.0.1.RELEASE</spring-data-graph.version>
 		<slf4j-version>1.6.1</slf4j-version>
 	</properties>
 

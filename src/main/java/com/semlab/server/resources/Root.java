@@ -13,6 +13,8 @@ public class Root {
 
 	@Autowired
 	Neo4jTemplate template;
+	@Autowired
+	Neo4jUtils utils;
 
 	private Node node;
 
@@ -25,7 +27,7 @@ public class Root {
 	}
 
 	public void relate(Node to) {
-		node.createRelationshipTo(to, RelationshipTypes.ROOT);
+		utils.relate(node, to, RelationshipTypes.ROOT);
 	}
 
 	public void relate(Node to, RelationshipType type) {

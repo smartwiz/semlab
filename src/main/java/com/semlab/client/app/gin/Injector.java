@@ -5,7 +5,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
 import com.semlab.client.app.Application;
-import com.semlab.shared.config.Configuration;
+import com.semlab.shared.services.SemlabServiceAsync;
 
 @GinModules({SystemModule.class, ClientModule.class})
 public interface Injector extends Ginjector {
@@ -15,6 +15,8 @@ public interface Injector extends Ginjector {
 	Application getApplication();
 	
 	EventBus getEventBus();
+	
+	SemlabServiceAsync getService();
 	
 }
 

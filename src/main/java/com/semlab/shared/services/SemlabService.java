@@ -11,5 +11,9 @@ import com.semlab.shared.config.Configuration;
 public interface SemlabService extends RemoteService {
 
 	Configuration getConfig();
+
+	void startImport(String token);
+
+	void startEnrich(String token);
 	
 }

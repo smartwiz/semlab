@@ -73,7 +73,7 @@ public class FBButton extends Composite {
 	public static void onComplete(SocialClient client) {
 		GWT.log("sc = " + client.getName());
 		Injector.INSTANCE.getEventBus().fireEvent(new LoginEvent(client));
-		logout();
+//		logout();
 	}
 
 }

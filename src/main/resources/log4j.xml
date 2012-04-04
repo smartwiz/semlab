@@ -10,42 +10,27 @@
 		</layout>
 	</appender>
 	
-	<appender name="fileAppender" class="org.apache.log4j.FileAppender">
-		<param name="Append" value="false"/>
-		<param name="File" value="C://logs//semseg//semseg.log"/>
-		<param name="Threshold" value="DEBUG"/>
-		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%-4r [%t] %-5p %c %x - %m%n" />
-		</layout>
-	</appender>
 	
 	<appender name="serviceAppender" class="org.apache.log4j.FileAppender">
 		<param name="Append" value="false"/>
-		<param name="File" value="C://logs//semseg//services.log"/>
+		<param name="File" value="C://projects/logs//semlab//services.log"/>
 		<param name="Threshold" value="DEBUG"/>
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%-4r [%t] %-5p %c %x - %m%n" />
 		</layout>
 	</appender>
-
-	<logger name="rs.co.neotech.server">
-		<level value="debug" />
-	</logger>
 	
 	<!-- Application Loggers -->
-	<logger name="rs.co.neotech.server.services">
+	<logger name="com.semlab.server">
 		<level value="debug" />
 		<appender-ref ref="serviceAppender" />
-	</logger>
-	<logger name="rs.co.neotech.controller">
-		<level value="info" />
 	</logger>
 	
 	<!-- Root Logger -->
 	<root>
 		<priority value="warn" />
 		<appender-ref ref="console" />
-		<appender-ref ref="fileAppender" />
+		<appender-ref ref="serviceAppender" />
 	</root>
 	
 </log4j:configuration>
