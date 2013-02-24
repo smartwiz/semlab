@@ -26,6 +26,10 @@ import com.semlab.shared.config.Property;
 import com.semlab.shared.config.Thing;
 import com.semlab.shared.config.Things;
 
+/**
+ * The DBpediaExtractor class extracts concepts from DBpedia via LookUpAPI and enriches them.
+ */
+
 @Component
 public class DBpediaExtractor {
 	
@@ -152,7 +156,7 @@ public class DBpediaExtractor {
 		}
 		
 		int index = 0;
-		Concept uri = null;
+		Concept uri;
 		
 		if(uris.size() == 1 && uris.get(index).getType() != null){
 			uri = uris.get(index);
